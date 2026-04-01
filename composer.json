@@ -16,6 +16,6 @@
     ],
     "require": {
         "php": ">=7.2",
-        "nece001/php-hound-cloud-storage"=>"^1.0"
+        "nece001/php-hound-cloud-storage":"^1.0"
     }
 }
