@@ -10,7 +10,7 @@ use Throwable;
  * @author nece001@163.com
  * @create 2026-03-29 21:36:10
  */
-class Disk implements IStorage
+class Disk extends Storage implements IStorage
 {
     /**
      * 根路径,例：
@@ -151,7 +151,7 @@ class Disk implements IStorage
     /**
      * @inheritDoc
      */
-    public function scandir(string $path = '', int $order = Consts::SCANDIR_SORT_ASCENDING): array
+    public function list(string $path = '', int $order = Consts::SCANDIR_SORT_ASCENDING): array
     {
         $full_path = $this->fullPath($path);
         if (!is_dir($full_path)) {
@@ -164,7 +164,15 @@ class Disk implements IStorage
             if ($file === '.' || $file === '..') {
                 continue;
             }
-            $result[] = $file;
+
+            $filepath = $full_path . DIRECTORY_SEPARATOR . $file;
+            $ctime = filectime($filepath);
+            $mtime = filemtime($filepath);
+            $atime = fileatime($filepath);
+            $size = filesize($filepath);
+            $is_dir = is_dir($filepath);
+
+            $result[] = $this->buildObjectListItem($file, $size, $is_dir, $ctime, $mtime, $atime);
         }
         return $result;
     }
